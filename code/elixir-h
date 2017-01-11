@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+QUERY=${1:-h/1}
+elixir -e "
+  import IEx.Helpers
+  Application.put_env(:iex, :colors, [width: 80, enabled: true])
+  h(${QUERY})
+  " \
+  | /usr/bin/less -R

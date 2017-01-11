@@ -1,0 +1,38 @@
+#!/usr/bin/env elixir
+# similar to `while gets`
+
+defmodule Helpers do
+  def chomp(string) do
+    String.trim_trailing(string, "\n")
+  end
+
+  def p(arg) do
+    inspect(arg, pretty: true)
+    |> IO.puts
+  end
+end
+
+defmodule Command do
+  import Helpers, warn: false
+  import IO,      warn: false, except: [inspect: 1, inspect: 2]
+  import String,  warn: false, except: [reverse: 1]
+  import Enum,    warn: false, except: [
+    at: 2,
+    chunk: 2,
+    slice: 2,
+    slice: 3,
+    split: 2
+  ]
+
+  def run(commands) do
+    code = """
+    IO.stream(:stdio, :line)
+    |> #{commands}
+    """
+
+    Code.eval_string(code, [commands: commands], __ENV__)
+  end
+end
+
+[command | _rest] = System.argv
+Command.run(command)
